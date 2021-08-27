@@ -257,7 +257,7 @@ wxString wxLocaleIdent::GetName() const
 
 bool wxLocaleIdent::IsDefault() const
 {
-    return m_language.IsEmpty();
+    return m_language.empty();
 }
 
 // ----------------------------------------------------------------------------

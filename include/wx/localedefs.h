@@ -109,7 +109,7 @@ struct WXDLLIMPEXP_BASE wxLanguageInfo
 };
 
 // ----------------------------------------------------------------------------
-// wxLocaleIdent: contains platform dependent language name
+// wxLocaleIdent: allows to fully identify a locale under all platforms
 // ----------------------------------------------------------------------------
 
 class wxLocaleIdent

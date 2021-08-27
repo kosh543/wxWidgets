@@ -67,15 +67,21 @@ struct wxLanguageInfo
 
 
 /**
-    @class wxLocaleIdent
+    Allows to construct the full locale identifier in a portable way.
     
-    Contains platform dependent language name.
+    Parts of the locale not supported by the current platform (e.g. modifier under non-Unix platforms) are ignored.
+    The remaining parts are used to construct a string uniquely identifying the locale in a platform-specific name.
 
     Usage example:
     @code
       auto loc = wxLocaleIdent("fr").Region("BE").Modifer("euro");
-      assert( loc.GetName() == "fr_BE@euro" );
+    #if defined(__WINDOWS__) || defined(__WXOSX__)
+      wxASSERT( loc.GetName() == "fr_BE" );
+    #elif defined(__UNIX__)
+      wxASSERT( loc.GetName() == "fr_BE@euro" );
+    #endif
     @endcode
+    @since 3.1.6
 */
 class wxLocaleIdent
 {
