@@ -20,6 +20,7 @@
 
 #if wxUSE_INTL
 
+#include "wx/uilocale.h"
 #include "wx/private/uilocale.h"
 
 #include "wx/msw/private/uilocale.h"
@@ -71,10 +72,17 @@ static int wxMSWCompareStringEx(LPCWSTR lpLocaleName,
     // Avoid calling CompareStringEx() on XP.
     if ( wxGetWinVersion() >= wxWinVersion_Vista )
     {
-        wxLoadedDLL dllKernel32(wxS("kernel32.dll"));
+        
         typedef int(WINAPI *CompareStringEx_t)(LPCWSTR,DWORD,LPCWSTR,int,LPCWSTR,int,LPNLSVERSIONINFO,LPVOID,LPARAM);
-        CompareStringEx_t pfnCompareStringEx = NULL;
-        wxDL_INIT_FUNC(pfn, CompareStringEx, dllKernel32);
+        static const CompareStringEx_t INVALID_FUNC_PTR = (CompareStringEx_t)-1;
+
+        static CompareStringEx_t pfnCompareStringEx = INVALID_FUNC_PTR;
+        if (pfnCompareStringEx == INVALID_FUNC_PTR)
+        {
+            wxLoadedDLL dllKernel32(wxS("kernel32.dll"));
+            wxDL_INIT_FUNC(pfn, CompareStringEx, dllKernel32);
+        }
+
         if (pfnCompareStringEx)
             return pfnCompareStringEx(lpLocaleName, dwCmpFlags, lpString1, cchCount1, lpString2,
                                       cchCount2, lpVersionInformation, lpReserved, lParam);
@@ -89,6 +97,31 @@ void wxUseLCID(LCID lcid)
     ::SetThreadLocale(lcid);
 
     wxMSWSetThreadUILanguage(LANGIDFROMLCID(lcid));
+}
+
+// ----------------------------------------------------------------------------
+// wxLocaleIdent::GetName() implementation for MSW
+// ----------------------------------------------------------------------------
+
+wxString wxLocaleIdent::GetName() const
+{
+    // Construct name in right format:
+    // Windows: <language>-<script>-<REGION>
+
+    wxString name;
+    if (!m_language.IsEmpty()) {
+        name << m_language;
+
+        if (!m_script.IsEmpty()) {
+            name << "-" << m_script;
+        }
+
+        if (!m_region.IsEmpty()) {
+            name << "-" << m_region;
+        }
+    }
+
+    return name;
 }
 
 // ----------------------------------------------------------------------------
@@ -166,7 +199,7 @@ wxUILocaleImpl* wxUILocaleImpl::CreateForLanguage(const wxLanguageInfo& info)
 }
 
 /* static */
-int wxUILocaleImpl::CompareStrings(const wxString& lhs, const wxString& rhs, const wxLocaleIdent& locale_id)
+int wxUILocale::CompareStrings(const wxString& lhs, const wxString& rhs, const wxLocaleIdent& locale_id)
 {
     int ret = wxMSWCompareStringEx(
         locale_id.IsDefault() ? LOCALE_NAME_USER_DEFAULT
