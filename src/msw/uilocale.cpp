@@ -176,7 +176,7 @@ int wxUILocaleImpl::CmpLocalizedStrings(const wxString& lhs, const wxString& rhs
         0, // Maybe we need LINGUISTIC_IGNORECASE here
         reinterpret_cast<LPCWSTR>(lhs.wc_str()), -1,
         reinterpret_cast<LPCWSTR>(rhs.wc_str()), -1,
-        nullptr, nullptr, 0);
+        NULL, NULL, 0);
 
     switch (ret)
     {

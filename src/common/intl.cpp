@@ -193,7 +193,8 @@ wxString wxLanguageInfo::GetLocaleName() const
 // wxLocaleIdent
 // ----------------------------------------------------------------------------
 
-wxLocaleIdent::wxLocaleIdent(const wxString& name) : LocaleName(name) {
+wxLocaleIdent::wxLocaleIdent(const wxString& name) : LocaleName(name)
+{
 #if defined(__WINDOWS__)
     // Windows: en-US
     LocaleName.Replace("_", "-");

@@ -43,7 +43,7 @@ public:
     static wxUILocaleImpl* CreateForLanguage(const wxLanguageInfo& info);
 
     // Platform dependent comparison of two strings, for a locale specified by wxLocaleIdent.
-    static int CmpLocalizedStrings(const wxString& lhs, const wxString& rhs, const wxLocaleIdent& locale_id);
+    static int CmpLocalizedStrings(const wxString& lhs, const wxString& rhs, const wxLocaleIdent& localeId);
 
     // Functions corresponding to wxUILocale ones.
     virtual wxString GetName() const = 0;
