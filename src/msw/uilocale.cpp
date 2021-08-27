@@ -84,8 +84,10 @@ static int wxMSWCompareStringEx(LPCWSTR lpLocaleName,
         }
 
         if (pfnCompareStringEx)
+        {
             return pfnCompareStringEx(lpLocaleName, dwCmpFlags, lpString1, cchCount1, lpString2,
                                       cchCount2, lpVersionInformation, lpReserved, lParam);
+        }
     }
     return 0;
 }
@@ -109,14 +111,17 @@ wxString wxLocaleIdent::GetName() const
     // Windows: <language>-<script>-<REGION>
 
     wxString name;
-    if (!m_language.IsEmpty()) {
+    if (!m_language.empty())
+    {
         name << m_language;
 
-        if (!m_script.IsEmpty()) {
+        if (!m_script.empty())
+        {
             name << "-" << m_script;
         }
 
-        if (!m_region.IsEmpty()) {
+        if (!m_region.empty())
+        {
             name << "-" << m_region;
         }
     }

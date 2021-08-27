@@ -47,7 +47,7 @@ public:
 
     // Compares two strings, for a locale specified by wxLocaleIdent.
     static int CompareStrings(const wxString& lhs, const wxString& rhs,
-                              const wxLocaleIdent& locale_id = wxLocaleIdent());
+                              const wxLocaleIdent& localeId = wxLocaleIdent());
 
     // Note that this class is not supposed to be used polymorphically, hence
     // its dtor is not virtual.
