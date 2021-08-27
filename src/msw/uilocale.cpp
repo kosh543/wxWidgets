@@ -55,6 +55,33 @@ static void wxMSWSetThreadUILanguage(LANGID langid)
     }
 }
 
+// Trivial wrapper for ::CompareStringEx().
+//
+// TODO-XP: Drop this when we don't support XP any longer.
+static int wxMSWCompareStringEx(LPCWSTR lpLocaleName,
+                                 DWORD dwCmpFlags,
+                                 LPCWSTR lpString1, //_In_NLS_string_(cchCount1)LPCWCH lpString1,
+                                 int cchCount1,
+                                 LPCWSTR lpString2, //_In_NLS_string_(cchCount2)LPCWCH lpString2,
+                                 int cchCount2,
+                                 LPNLSVERSIONINFO lpVersionInformation,
+                                 LPVOID lpReserved,
+                                 LPARAM lParam)
+{
+    // Avoid calling CompareStringEx() on XP.
+    if ( wxGetWinVersion() >= wxWinVersion_Vista )
+    {
+        wxLoadedDLL dllKernel32(wxS("kernel32.dll"));
+        typedef int(WINAPI *CompareStringEx_t)(LPCWSTR,DWORD,LPCWSTR,int,LPCWSTR,int,LPNLSVERSIONINFO,LPVOID,LPARAM);
+        CompareStringEx_t pfnCompareStringEx = NULL;
+        wxDL_INIT_FUNC(pfn, CompareStringEx, dllKernel32);
+        if (pfnCompareStringEx)
+            return pfnCompareStringEx(lpLocaleName, dwCmpFlags, lpString1, cchCount1, lpString2,
+                                      cchCount2, lpVersionInformation, lpReserved, lParam);
+    }
+    return 0;
+}
+
 } // anonymous namespace
 
 void wxUseLCID(LCID lcid)
@@ -136,6 +163,32 @@ wxUILocaleImpl* wxUILocaleImpl::CreateForLanguage(const wxLanguageInfo& info)
     }
 
     return new wxUILocaleImplLCID(info.GetLCID());
+}
+
+/* static */
+int wxUILocaleImpl::CmpLocalizedStrings(const wxString& lhs, const wxString& rhs, const wxLocaleIdent& locale_id)
+{
+    int ret = wxMSWCompareStringEx(
+        locale_id.IsDefault() ? LOCALE_NAME_USER_DEFAULT
+                              : reinterpret_cast<LPCWSTR>(
+                                  locale_id.GetLocaleName().wc_str()
+                                  ),
+        0, // Maybe we need LINGUISTIC_IGNORECASE here
+        reinterpret_cast<LPCWSTR>(lhs.wc_str()), -1,
+        reinterpret_cast<LPCWSTR>(rhs.wc_str()), -1,
+        nullptr, nullptr, 0);
+
+    switch (ret)
+    {
+    case CSTR_LESS_THAN:
+        return -1;
+    case CSTR_EQUAL:
+        return 0;
+    case CSTR_GREATER_THAN:
+        return 1;
+    }
+
+    return 0;
 }
 
 #endif // wxUSE_INTL

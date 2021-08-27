@@ -190,6 +190,28 @@ wxString wxLanguageInfo::GetLocaleName() const
 }
 
 // ----------------------------------------------------------------------------
+// wxLocaleIdent
+// ----------------------------------------------------------------------------
+
+wxLocaleIdent::wxLocaleIdent(const wxString& name) : LocaleName(name) {
+#if defined(__WINDOWS__)
+    // Windows: en-US
+    LocaleName.Replace("_", "-");
+#else
+    // Unix: en_US
+    LocaleName.Replace("-", "_");
+#endif
+}
+
+wxString wxLocaleIdent::GetLocaleName() const {
+    return LocaleName;
+}
+
+bool wxLocaleIdent::IsDefault() const {
+    return LocaleName.IsEmpty();
+}
+
+// ----------------------------------------------------------------------------
 // wxLocale
 // ----------------------------------------------------------------------------
 

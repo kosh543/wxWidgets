@@ -42,6 +42,9 @@ public:
     // It may return NULL in case of failure.
     static wxUILocaleImpl* CreateForLanguage(const wxLanguageInfo& info);
 
+    // Platform dependent comparison of two strings, for a locale specified by wxLocaleIdent.
+    static int CmpLocalizedStrings(const wxString& lhs, const wxString& rhs, const wxLocaleIdent& locale_id);
+
     // Functions corresponding to wxUILocale ones.
     virtual wxString GetName() const = 0;
     virtual wxString GetInfo(wxLocaleInfo index, wxLocaleCategory cat) const = 0;

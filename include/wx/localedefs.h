@@ -108,6 +108,22 @@ struct WXDLLIMPEXP_BASE wxLanguageInfo
     const char* TrySetLocale() const;
 };
 
+// ----------------------------------------------------------------------------
+// wxLocaleIdent: contains platform dependent language name
+// ----------------------------------------------------------------------------
+
+class wxLocaleIdent
+{
+public:
+    wxLocaleIdent() = default;            // Leave name empty
+    wxLocaleIdent(const wxString& name);  // Constract name from wxString
+    wxString GetLocaleName() const;
+    bool IsDefault() const;               // Empty name represents user's default language
+private:
+    wxString LocaleName;                  // Platform dependent name, e.g.
+                                          // fr_FR for Unix and fr-FR for Windows
+};
+
 #endif // wxUSE_INTL
 
 #endif // _WX_LOCALEDEFS_H_
