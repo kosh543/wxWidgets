@@ -67,6 +67,91 @@ struct wxLanguageInfo
 
 
 /**
+    @class wxLocaleIdent
+    
+    Contains platform dependent language name.
+
+    Usage example:
+    @code
+      auto loc = wxLocaleIdent("fr").Region("BE").Modifer("euro");
+      assert( loc.GetName() == "fr_BE@euro" );
+    @endcode
+*/
+class wxLocaleIdent
+{
+public:
+    /**
+        This is the default constructor and it leaves language empty.
+    */
+    wxLocaleIdent();
+
+    /**
+        Constructor with language.
+
+        @param language
+            ISO 639 language code. 
+            See Language() for more detailed info.
+    */
+    wxLocaleIdent(const wxString& language);
+
+    /**
+        Set language.
+        Return reference to @this for method chaining.
+
+        @param language
+            It is a lowercase ISO 639 language code.
+            The codes from ISO 639-1 are used when available.
+            Otherwise, codes from ISO 639-2/T are used.
+    */
+    wxLocaleIdent& Language(const wxString& language);
+
+    /**
+        Set region.
+        Return reference to @this for method chaining.
+
+        @param region
+            It specifies an uppercase ISO 3166-1 country/region identifier.
+    */
+    wxLocaleIdent& Region(const wxString& region);
+
+    /**
+        Set script.
+        Return reference to @this for method chaining.
+
+        @param script
+            It is an initial-uppercase ISO 15924 script code.
+    */
+    wxLocaleIdent& Script(const wxString& script);
+
+    /**
+        Set modifier.
+        Return reference to @this for method chaining.
+        
+        @param modifier
+            Modifier is defined by ISO/IEC 15897.
+            It is a semi-colon separated list of identifiers, or name=value pairs.
+    */
+    wxLocaleIdent& Modifier(const wxString& modifier);
+
+    /**
+        Construct platform dependent name.
+        Format:
+        Windows: <language>-<script>-<REGION>
+        Unix:    <language>_<REGION>@<modifier>
+        MacOS:   <language>-<script>_<REGION>
+    */
+    wxString GetName() const;
+
+    /**
+        Empty language represents user's default language.
+
+        @return @true if language is empty, @false otherwise.
+    */
+    bool IsDefault() const;
+};
+
+
+/**
     The category of locale settings.
 
     @see wxLocale::GetInfo(), wxUILocale::GetInfo()

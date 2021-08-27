@@ -95,9 +95,9 @@ wxString wxUILocale::GetInfo(wxLocaleInfo index, wxLocaleCategory cat) const
 }
 
 /* static */
-int wxUILocale::CmpLocalizedStrings(const wxString& lhs, const wxString& rhs, const wxLocaleIdent& locale_id)
+int wxUILocale::CompareStrings(const wxString& lhs, const wxString& rhs, const wxLocaleIdent& locale_id)
 {
-    return wxUILocaleImpl::CmpLocalizedStrings(lhs, rhs, locale_id);
+    return wxUILocaleImpl::CompareStrings(lhs, rhs, locale_id);
 }
 
 wxUILocale::~wxUILocale()

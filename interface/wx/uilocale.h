@@ -81,6 +81,24 @@ public:
     static const wxUILocale& GetCurrent();
 
     /**
+        Compares two strings, for a locale specified by locale_id.
+
+        @param lhs
+            First comparing string.
+        @param rhs
+            Second comparing string.
+        @param locale_id
+            Represents platform dependent language name.
+            @see wxLocaleIdent for details.
+        @return
+            -1 if lhs less than rhs.
+            0 if lhs equal to rhs.
+            1 if lhs greater than rhs.
+     */
+    static int CompareStrings(const wxString& lhs, const wxString& rhs,
+                              const wxLocaleIdent& locale_id = wxLocaleIdent());
+
+    /**
         Get the platform-dependent name of the current locale.
 
         This name can be used in diagnostic messages.

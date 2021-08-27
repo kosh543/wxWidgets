@@ -115,13 +115,19 @@ struct WXDLLIMPEXP_BASE wxLanguageInfo
 class wxLocaleIdent
 {
 public:
-    wxLocaleIdent() { } // Leave name empty
-    wxLocaleIdent(const wxString& name);  // Construct name from wxString
-    wxString GetLocaleName() const;
-    bool IsDefault() const;               // Empty name represents user's default language
+    wxLocaleIdent() { }                                  // Leave language empty
+    wxLocaleIdent(const wxString& language);             // Construct name from language
+    wxLocaleIdent& Language(const wxString& language);   // Set language
+    wxLocaleIdent& Region(const wxString& region);       // Set region
+    wxLocaleIdent& Script(const wxString& script);       // Set script
+    wxLocaleIdent& Modifier(const wxString& modifier);   // Set modifier
+    wxString GetName() const;                            // Construct platform dependent name
+    bool IsDefault() const;                              // Empty language represents user's default language
 private:
-    wxString m_name;                  // Platform dependent name, e.g.
-                                          // fr_FR for Unix and fr-FR for Windows
+    wxString m_language;
+    wxString m_region;
+    wxString m_script;
+    wxString m_modifier;
 };
 
 #endif // wxUSE_INTL

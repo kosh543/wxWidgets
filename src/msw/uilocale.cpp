@@ -166,12 +166,12 @@ wxUILocaleImpl* wxUILocaleImpl::CreateForLanguage(const wxLanguageInfo& info)
 }
 
 /* static */
-int wxUILocaleImpl::CmpLocalizedStrings(const wxString& lhs, const wxString& rhs, const wxLocaleIdent& locale_id)
+int wxUILocaleImpl::CompareStrings(const wxString& lhs, const wxString& rhs, const wxLocaleIdent& locale_id)
 {
     int ret = wxMSWCompareStringEx(
         locale_id.IsDefault() ? LOCALE_NAME_USER_DEFAULT
                               : reinterpret_cast<LPCWSTR>(
-                                  locale_id.GetLocaleName().wc_str()
+                                  locale_id.GetName().wc_str()
                                   ),
         0, // Maybe we need LINGUISTIC_IGNORECASE here
         reinterpret_cast<LPCWSTR>(lhs.wc_str()), -1,
