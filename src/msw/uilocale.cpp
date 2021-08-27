@@ -69,26 +69,27 @@ static int wxMSWCompareStringEx(LPCWSTR lpLocaleName,
                                  LPVOID lpReserved,
                                  LPARAM lParam)
 {
-    // Avoid calling CompareStringEx() on XP.
-    if ( wxGetWinVersion() >= wxWinVersion_Vista )
-    {
-        
-        typedef int(WINAPI *CompareStringEx_t)(LPCWSTR,DWORD,LPCWSTR,int,LPCWSTR,int,LPNLSVERSIONINFO,LPVOID,LPARAM);
-        static const CompareStringEx_t INVALID_FUNC_PTR = (CompareStringEx_t)-1;
+    typedef int(WINAPI *CompareStringEx_t)(LPCWSTR,DWORD,LPCWSTR,int,LPCWSTR,int,LPNLSVERSIONINFO,LPVOID,LPARAM);
+    static const CompareStringEx_t INVALID_FUNC_PTR = (CompareStringEx_t)-1;
 
-        static CompareStringEx_t pfnCompareStringEx = INVALID_FUNC_PTR;
-        if (pfnCompareStringEx == INVALID_FUNC_PTR)
+    static CompareStringEx_t pfnCompareStringEx = INVALID_FUNC_PTR;
+
+    if (pfnCompareStringEx == INVALID_FUNC_PTR)
+    {
+        // Avoid calling CompareStringEx() on XP.
+        if (wxGetWinVersion() >= wxWinVersion_Vista)
         {
             wxLoadedDLL dllKernel32(wxS("kernel32.dll"));
             wxDL_INIT_FUNC(pfn, CompareStringEx, dllKernel32);
         }
-
-        if (pfnCompareStringEx)
-        {
-            return pfnCompareStringEx(lpLocaleName, dwCmpFlags, lpString1, cchCount1, lpString2,
-                                      cchCount2, lpVersionInformation, lpReserved, lParam);
-        }
     }
+
+    if (pfnCompareStringEx)
+    {
+        return pfnCompareStringEx(lpLocaleName, dwCmpFlags, lpString1, cchCount1, lpString2,
+                                    cchCount2, lpVersionInformation, lpReserved, lParam);
+    }
+    
     return 0;
 }
 
@@ -208,12 +209,12 @@ int wxUILocale::CompareStrings(const wxString& lhs, const wxString& rhs, const w
 {
     int ret = wxMSWCompareStringEx(
         locale_id.IsDefault() ? LOCALE_NAME_USER_DEFAULT
-                              : reinterpret_cast<LPCWSTR>(
+                              : static_cast<LPCWSTR>(
                                   locale_id.GetName().wc_str()
                                   ),
         0, // Maybe we need LINGUISTIC_IGNORECASE here
-        reinterpret_cast<LPCWSTR>(lhs.wc_str()), -1,
-        reinterpret_cast<LPCWSTR>(rhs.wc_str()), -1,
+        static_cast<LPCWSTR>(lhs.wc_str()), -1,
+        static_cast<LPCWSTR>(rhs.wc_str()), -1,
         NULL, NULL, 0);
 
     switch (ret)
