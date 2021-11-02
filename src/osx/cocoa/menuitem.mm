@@ -270,6 +270,15 @@ public :
             wxLogDebug("wxMenuItemCocoaImpl::Hide not yet supported under OS X < 10.5");
     }
 
+    void SetAllowsKeyEquivalentWhenHidden( bool allow ) wxOVERRIDE
+    {
+        // setAllowsKeyEquivalentWhenHidden is available since macOS 10.13
+        if (@available(macOS 10.13, *))
+            [m_osxMenuItem setAllowsKeyEquivalentWhenHidden:allow ];
+        else
+            wxLogDebug("wxMenuItemCocoaImpl::setAllowsKeyEquivalentWhenHidden not supported under OS X < 10.13");
+    }
+
     void SetLabel( const wxString& text, wxAcceleratorEntry *entry ) wxOVERRIDE
     {
         wxCFStringRef cfText(text);

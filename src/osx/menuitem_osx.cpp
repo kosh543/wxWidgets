@@ -207,6 +207,37 @@ void wxMenuItem::UpdateItemText()
 #endif // wxUSE_ACCEL/!wxUSE_ACCEL
 }
 
+#if wxUSE_ACCEL
+
+void wxMenuItem::AddExtraAccel(const wxAcceleratorEntry& accel)
+{
+    wxMenuItemBase::AddExtraAccel(accel);
+
+    // create the same wxMenuItem but hidden and with different accelerator.
+    wxMenuItem* hiddenMenuItem = new wxMenuItem(m_parentMenu, GetId(), m_text, m_help, GetKind(), m_subMenu);
+    hiddenMenuItem->SetAccel(&(m_extraAccels.back()));
+    hiddenMenuItem->GetPeer()->Hide(true);
+    hiddenMenuItem->GetPeer()->SetAllowsKeyEquivalentWhenHidden(true);
+    m_parentMenu->Append(hiddenMenuItem);
+    m_hiddenMenuItems.push_back(hiddenMenuItem);
+}
+
+void wxMenuItem::ClearExtraAccels()
+{
+    wxMenuItemBase::ClearExtraAccels();
+    RemoveHiddenItems();
+}
+
+void wxMenuItem::RemoveHiddenItems()
+{
+    for (size_t i = 0; i < m_hiddenMenuItems.size(); ++i)
+    {
+        m_parentMenu->Remove(m_hiddenMenuItems[i]);
+    }
+}
+
+#endif // wxUSE_ACCEL
+
 // ----------------------------------------------------------------------------
 // wxMenuItemBase
 // ----------------------------------------------------------------------------
