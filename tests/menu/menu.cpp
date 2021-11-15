@@ -181,9 +181,6 @@ void MenuTestCase::CreateFrame()
         extraAccels->AddExtraAccel(entry);
     if (entry.FromString("Ctrl-W"))
         extraAccels->SetAccel(&entry);
-#if defined(__WXOSX_COCOA__)
-    m_itemCount += 2;
-#endif
     m_itemCount++;
 
     PopulateMenu(helpMenu, "Helpmenu item ", m_itemCount);
