@@ -47,7 +47,7 @@ wxObject *wxBitmapButtonXmlHandler::DoCreateResource()
     {
         button->Create(m_parentAsWindow,
                        GetID(),
-                       GetBitmap(wxT("bitmap"), wxART_BUTTON),
+                       GetBitmapBundle(wxT("bitmap"), wxART_BUTTON),
                        GetPosition(), GetSize(),
                        GetStyle(wxT("style")),
                        wxDefaultValidator,
@@ -59,13 +59,13 @@ wxObject *wxBitmapButtonXmlHandler::DoCreateResource()
     SetupWindow(button);
 
     if (GetParamNode(wxT("selected")))
-        button->SetBitmapSelected(GetBitmap(wxT("selected")));
+        button->SetBitmapPressed(GetBitmapBundle(wxT("selected")));
     if (GetParamNode(wxT("focus")))
-        button->SetBitmapFocus(GetBitmap(wxT("focus")));
+        button->SetBitmapFocus(GetBitmapBundle(wxT("focus")));
     if (GetParamNode(wxT("disabled")))
-        button->SetBitmapDisabled(GetBitmap(wxT("disabled")));
+        button->SetBitmapDisabled(GetBitmapBundle(wxT("disabled")));
     if (GetParamNode(wxT("hover")))
-        button->SetBitmapHover(GetBitmap(wxT("hover")));
+        button->SetBitmapCurrent(GetBitmapBundle(wxT("hover")));
 
     return button;
 }
